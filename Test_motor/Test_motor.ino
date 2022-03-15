@@ -5,12 +5,17 @@
 #define phase_A 2   //INPUT PIN - encoder
 #define phase_B 3
 
+const int interrupt0 = 0;   // for pin 2, or digitalPinToInterrupt(2) see attachInterrupt
+int pulse = 0;
+
 void setup() {
+  attachInterrupt (interrupt0, call_back, FALLING);
+  
   pinMode(enA, OUTPUT);
   pinMode(in1, OUTPUT);
   pinMode(in2, OUTPUT);
-  pinMode(phase_A, INPUT);
-  pinMode(phase_B, INPUT);
+  pinMode(phase_A, INPUT_PULLUP);
+  pinMode(phase_B, INPUT_PULLUP);
 
   digitalWrite(in1, HIGH);  //set rotate direction of motor A
   digitalWrite(in2, LOW);   
@@ -18,15 +23,15 @@ void setup() {
   
   Serial.begin(9600);       //start Serial monitor
 
-  int count = 0;
 }
 
 void loop() {
-  Serial.print(digitalRead(phase_A), " ");   //see monitor and plotter for output of encoder
+  Serial.println(pulse);
+}
 
-  prev = digitalRead(phase_A);
-  if (digitalRead(phase_A)==1 && prev==0)
-    ++count;
-  Serial.println(count);
-  //aaa
+void call_back() {
+  if (digitalRead(phase_B) == LOW)
+    ++pulse;
+  else 
+    --pulse;
 }
