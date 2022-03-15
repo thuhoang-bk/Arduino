@@ -18,9 +18,15 @@ void setup() {
   
   Serial.begin(9600);       //start Serial monitor
 
+  int count = 0;
 }
 
 void loop() {
-  Serial.println(digitalRead(phase_A));
-  //see monitor and plotter for output of encoder
+  Serial.print(digitalRead(phase_A), " ");   //see monitor and plotter for output of encoder
+
+  prev = digitalRead(phase_A);
+  if (digitalRead(phase_A)==1 && prev==0)
+    ++count;
+  Serial.println(count);
+  //aaa
 }
