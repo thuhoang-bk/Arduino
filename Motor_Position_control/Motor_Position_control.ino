@@ -52,14 +52,14 @@ int pid(int err, int kp, int ki, int kd) {
   
   d_err = err - prev_err;
   i_err += err;
-  if (i_err > 100) i_err=100;
-  if (i_err < -100) i_err=-100;
+  //if (i_err > 100) i_err=100;
+  //if (i_err < -100) i_err=-100;
 
   prev_err = err;
   
   temp = kp*err + ki*i_err + kd*d_err;
-  if (i_err > 255) i_err=255;
-  if (i_err < -255) i_err=-255;
+  if (temp > 255) temp=255;
+  if (temp < -255) temp=-255;
   
   return temp;
 }
@@ -67,7 +67,10 @@ int pid(int err, int kp, int ki, int kd) {
 void loop() {
   Serial.println(pos);
 
+  set_pos = 100;
+
   error = set_pos - pos;
-  energy = pid(error, 1, 0, 0);
-  rotate(energy);
+  //energy = pid(error, 1, 0, 0);
+  energy = pid(error, 10, 30, 200);
+  rotate(energy); 
 }
