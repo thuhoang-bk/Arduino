@@ -7,7 +7,7 @@
 //----------
 
 int pos = 0;     //when motor start, set that initial position = 0 = origin
-int set_pos, error, energy;
+int set_pos = 100, error, energy;
 
 void rotate(int energy) {
   if (energy > 255) energy=255;
@@ -46,14 +46,12 @@ void setup() {
 
 int pid(int err, int kp, int ki, int kd) {
 
+  static int prev_err = set_pos;    //exist whole run-time but init once, value update each call to pid()
   int d_err, i_err;
-  static int prev_err;    //exist whole run-time
   long temp;
   
   d_err = err - prev_err;
   i_err += err;
-  //if (i_err > 100) i_err=100;
-  //if (i_err < -100) i_err=-100;
 
   prev_err = err;
   
@@ -67,10 +65,13 @@ int pid(int err, int kp, int ki, int kd) {
 void loop() {
   Serial.println(pos);
 
-  set_pos = 100;
-
   error = set_pos - pos;
-  //energy = pid(error, 1, 0, 0);
-  energy = pid(error, 10, 30, 200);
+
+  energy = pid(error, 10, 30, 200);   
+  //range 0-390: 10 30 200  != (1, 3, 20) --general: (k, 0, 0) but osci and sse.
+  //range 0-2000: 10, 6, 120
+  //range 0-5000: 1, 3, 100 etc.   >>infinite pos, but finite speed
   rotate(energy); 
+
+  //PID help "lock" position while if..else just restore position when use force to rotate motor.
 }

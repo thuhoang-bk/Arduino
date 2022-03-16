@@ -5,3 +5,8 @@ Test_motor: test hall encoder of motor GM25
 	-GM25:  (2 pin -> L298N, 4 pin -> UNO) x 2
 	-L298N: 2 pin -> Battery, (3 pin -> UNO) x 2
 	(UNO-GND <-> L298N-GND)
+	
+PID 
+	- (1, 0, 0) -> (10, 0, 0): 3 "poles" oscilate
+		-> (10, 30, 0): very unstable (oscilate non-stop)
+		-> (10, 30, 200): stable
