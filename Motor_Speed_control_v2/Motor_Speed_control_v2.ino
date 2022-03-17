@@ -4,13 +4,13 @@
 #define in1 9
 #define in2 10
 #define phase_A 47   //INPUT PIN - encoder
-#define phase_B 3
+#define phase_B 6
 
 
 long time_prev = 0;
 int vel;
-float set_vel_rpm = 180; // (RPM) max 180 RPM = 1180 pulses/s = 3 vong/s
-float set_vel = set_vel_rpm*390.0/60.0 / 100; // convert to pulse per 10 millisec
+float set_vel_rpm = 120; // (RPM) max 180 RPM = 1180 pulses/s = 3 vong/s
+float set_vel = set_vel_rpm*390.0/60.0 /10;   // convert to pulse per 10 milli sec
 float error;
 int energy;
 
@@ -68,15 +68,15 @@ int pid(float err, float kp, float ki, float kd) {
 
 void loop() {
   
-  if (millis()-time_prev >=10) {    //max output: 1180 pulse/sec = 3 rps = 180 rpm
+  if (millis()-time_prev >=100) {    //max output: 1180 pulse/sec = 3 rps = 180 rpm
     time_prev = millis();
     vel = TCNT5;
     TCNT5=0;
 
     error = set_vel - vel;
-    energy = pid(error, 80, 80, 0);
+    energy = pid(error, 12, 0, 0);
     rotate(energy);                  
-    
+
     Serial.print(set_vel);
     Serial.print(" ");
     Serial.println(vel);  //*6000.0/390.0);  //conver back to RPM     

@@ -7,7 +7,7 @@
 //----------
 
 int pos = 0;     //when motor start, set that initial position = 0 = origin
-int set_pos = 100, error, energy;
+int set_pos = 390, error, energy;
 
 void rotate(int energy) {
   if (energy > 255) energy=255;

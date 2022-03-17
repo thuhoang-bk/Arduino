@@ -19,7 +19,7 @@ void setup() {
 
   digitalWrite(in1, HIGH);  //set rotate direction of motor A
   digitalWrite(in2, LOW);   
-  analogWrite(enA, 126);    //set speed of motor A
+  analogWrite(enA, 0);    //set speed of motor A
   
   Serial.begin(9600);       //start Serial monitor
 
