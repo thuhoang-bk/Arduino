@@ -8,13 +8,13 @@
 // lên 0.6 thì như máy nghiền.
 // Chốt Kp = 5, Ki = 0.6 , Kd = 0-> êm, tầm 120
 // NHỚ: PID tính trên đầu ra chứ đừng tính trên cái trước đầu ra, vd tính trên RPM chứng không phải xung.
-#include <TimerOne.h>
+#include <TimerOne.h>   //avoid using PWM on pin 11, 12, 13
 
-#define enA 8       //controls pin
-#define in1 9
-#define in2 10
-#define phase_A 2   //encoder pins
-#define phase_B 3
+#define enA 7       //controls pin
+#define in1 15
+#define in2 14
+#define phase_A 3   //encoder pins
+#define phase_B 5
 
 double T, xung;
 double tocdo, Tocdodat;
@@ -27,13 +27,13 @@ void rotate(double energy) {
   if (energy > 255) energy=255;
   if (energy < -255) energy=-255;
   if (energy > 0) {
-    digitalWrite(in1, HIGH);      //set rotate direction of motor A
-    digitalWrite(in2, LOW);   
+    digitalWrite(in1, LOW);      //set rotate direction of motor A
+    digitalWrite(in2, HIGH);   
     analogWrite(enA, energy);     //set speed of motor A
   }
   else {
-    digitalWrite(in1, LOW); 
-    digitalWrite(in2, HIGH);   
+    digitalWrite(in1, HIGH); 
+    digitalWrite(in2, LOW);   
     analogWrite(enA, -energy);  
   }
 }
@@ -49,13 +49,13 @@ void setup() {
   
   E = 0; E1 = 0; E2 = 0;
   Output = 0; LastOutput = 0;
+  
   // Thong so PID
   T = 0.01;                       //thoi gian lay mau - s
-  
   Kp = 5; Ki = 0.6; Kd = 0.0;  
-
+  
   Serial.begin(9600);
-  attachInterrupt(0, Demxung, FALLING);
+  attachInterrupt(digitalPinToInterrupt(phase_A), Demxung, FALLING);
   Timer1.initialize(10000);       // 10 ms
   Timer1.attachInterrupt(PID);
 }
