@@ -57,8 +57,8 @@ void presskey_callback(const geometry_msgs::Twist& vel_msg){
   linear_x = vel_msg.linear.x;
   angular_z = vel_msg.angular.z;
   
-  Tocdodat_a = -linear_x;
-  Tocdodat_b =  linear_x;
+  Tocdodat_a = -linear_x - angular_z * 30/PI;
+  Tocdodat_b =  linear_x - angular_z * 30/PI;
 }
 
 ros::Subscriber<geometry_msgs::Twist> sub("cmd_vel", &presskey_callback );
@@ -137,7 +137,7 @@ void PID() {
   rotate_b(Output_b);
 }
 
-void loop()
+void loop()                 //you should set speed=30, turn=2, peace. linear=RPM, angular=rad/s
 { 
   nh.spinOnce();
   delay(1);
