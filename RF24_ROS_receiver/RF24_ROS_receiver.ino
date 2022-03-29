@@ -1,3 +1,7 @@
+#include <SPI.h>
+#include <nRF24L01.h>
+#include <RF24.h>
+
 #include <TimerOne.h>   //avoid using PWM on pin 11, 12, 13
 #include <ros.h>
 #include <geometry_msgs/Twist.h>
@@ -14,7 +18,8 @@
 #define phaseA_b 2   //encoder pins
 #define phaseB_b 4
 
-ros::NodeHandle  nh;
+RF24 radio(24, 53); // CE, CSN
+const byte address[6] = "00001";
 
 double T, xung_a, xung_b;
 double tocdo_a, tocdo_b, Tocdodat_a, Tocdodat_b;
@@ -53,16 +58,6 @@ void rotate_b(double energy) {
   }
 }
 
-void presskey_callback(const geometry_msgs::Twist& vel_msg){
-  linear_x = vel_msg.linear.x;
-  angular_z = vel_msg.angular.z;
-  
-  Tocdodat_a = -linear_x - angular_z * 30/PI;
-  Tocdodat_b =  linear_x - angular_z * 30/PI;
-}
-
-ros::Subscriber<geometry_msgs::Twist> sub("cmd_vel", &presskey_callback );
-
 void setup()
 { 
   pinMode(in1, OUTPUT);
@@ -76,9 +71,14 @@ void setup()
   pinMode(enB, OUTPUT);
   pinMode(phaseA_b, INPUT_PULLUP);
   pinMode(phaseB_b, INPUT_PULLUP);
+
+  radio.begin();
+  radio.openReadingPipe(0, address);
+  radio.setPALevel(RF24_PA_MIN);   
+  radio.startListening();
+  
   Tocdodat_a = 0; tocdo_a = 0;      //120 RPM (stable) - max ~200 RPM, below 5 RPM not run
   Tocdodat_b = 0; tocdo_b = 0;
-  
   E_a = 0; E1_a = 0; E2_a = 0;
   Output_a = 0; LastOutput_a = 0;
   E_b = 0; E1_b = 0; E2_b = 0;
@@ -87,7 +87,6 @@ void setup()
   // Thong so PID
   T = 0.01;                       //thoi gian lay mau - s
   Kp = 5; Ki = 0.6; Kd = 0.0;  
-
   alpha = 2*T*Kp + Ki*T*T + 2*Kd;
   beta = -2*T*Kp + Ki*T*T - 4*Kd;
   gamma = 2*Kd;
@@ -97,9 +96,7 @@ void setup()
   attachInterrupt(digitalPinToInterrupt(phaseA_b), Demxung_b, FALLING);
   Timer1.initialize(10000);       // 10 ms
   Timer1.attachInterrupt(PID);    // PID check speed and control speed of 2 motors periodically
-  
-  nh.initNode();
-  nh.subscribe(sub);
+
 }
 
 void Demxung_a() {
@@ -140,6 +137,11 @@ void PID() {
 
 void loop()                 //you should set speed=30, turn=2, peace. linear=RPM, angular=rad/s
 { 
-  nh.spinOnce();
-  delay(1);
+  if (radio.available()) {
+      double Tocdodat[2];
+      radio.read(&Tocdodat, sizeof(Tocdodat));
+      Tocdodat_a = Tocdodat[0];
+      Tocdodat_b = Tocdodat[1];
+  }
+
 }
