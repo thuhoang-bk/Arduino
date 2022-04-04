@@ -203,7 +203,7 @@ void loop()                 //you should set speed=30, turn=2, peace. linear=RPM
   odom.twist.twist.angular.z = vth;
 
   //publish the message
-  odom_pub.publish(&odom);
+  //odom_pub.publish(&odom);
 
   last_time = current_time;
   delay(1000);  // velocity change should take effect after 1 sec
