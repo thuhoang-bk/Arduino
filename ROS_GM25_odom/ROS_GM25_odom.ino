@@ -1,7 +1,6 @@
 #include <TimerOne.h>   //avoid using PWM on pin 11, 12, 13
 #include <ros.h>
 #include <geometry_msgs/Twist.h>
-#include <geometry_msgs/Pose2D.h>
 
 #define enA 7      //speed control pin
 #define in1 15
@@ -92,5 +91,6 @@ void loop()                 //you should set speed=30, turn=2, peace. linear=RPM
   pub.publish(&state_msg);
   
   nh.spinOnce();
-  delay(10);                //delay(1) will loss sync - unable sub topic aka. rostopic echo nothing.
+  //delay(10);                //delay(1) will loss sync - unable sub topic aka. rostopic echo nothing. <-false
+  //no delay still work fine, even better. ERROR sync cause by arduino POWER supply. 1 POWER only.
 }
