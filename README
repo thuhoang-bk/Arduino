@@ -1,6 +1,7 @@
 This repo contains my Arduino projects, peace-v-
 
 Blink: test arduino board
+
 Test_motor: test hall encoder of motor GM25
 	-GM25:  (2 pin -> L298N, 4 pin -> UNO) x 2
 	-L298N: 2 pin -> Battery, (3 pin -> UNO) x 2
@@ -10,3 +11,8 @@ PID
 	- (1, 0, 0) -> (10, 0, 0): 3 "poles" oscilate
 		-> (10, 30, 0): very unstable (oscilate non-stop)
 		-> (10, 30, 200): stable
+		
+ROS-GM25-odom
+	- first bug: odom message too big
+	- biggest bug caused by hardware: use 2 power supply for Mega board at the same time
+
