@@ -22,6 +22,7 @@ double Output_a, LastOutput_a, Output_b, LastOutput_b;
 double linear_x = 0, angular_z = 0;
 double R = 14.3, d = 6.3; //cm, 1/2 wheel distance and wheel diameter.
 double vx=0, vtheta=0, x=0, y=0, theta=0;
+unsigned long pub_timer=0;
 
 ros::NodeHandle  nh;
 
@@ -81,14 +82,17 @@ void setup()
 
 void loop()                 //you should set speed=30, turn=2, peace. linear=RPM, angular=rad/s
 { 
-
-  state_msg.linear.x = x;
-  state_msg.linear.y = y; 
-  state_msg.linear.z = theta;
-  state_msg.angular.x = vx;
-  state_msg.angular.y = vtheta;
   
-  pub.publish(&state_msg);
+  if ((millis() - pub_timer) > 10){
+    state_msg.linear.x = x;
+    state_msg.linear.y = y; 
+    state_msg.linear.z = theta;
+    state_msg.angular.x = vx;
+    state_msg.angular.y = vtheta;
+    
+    pub.publish(&state_msg);
+    pub_timer =  millis();
+  }
   
   nh.spinOnce();
   //delay(10);                //delay(1) will loss sync - unable sub topic aka. rostopic echo nothing. <-false
