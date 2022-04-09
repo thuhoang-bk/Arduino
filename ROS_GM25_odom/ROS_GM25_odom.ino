@@ -20,7 +20,7 @@ double E_a, E1_a, E2_a, E_b, E1_b, E2_b;
 double alpha, beta, gamma, Kp, Ki, Kd;
 double Output_a, LastOutput_a, Output_b, LastOutput_b;
 double linear_x = 0, angular_z = 0;
-double R = 14.3, d = 6.3; //cm, 1/2 wheel distance and wheel diameter.
+double R = 0.143, d = 0.063; //m, 1/2 wheel distance and wheel diameter.
 double vx=0, vtheta=0, x=0, y=0, theta=0;
 unsigned long pub_timer=0;
 
@@ -80,7 +80,7 @@ void setup()
 }
 
 
-void loop()                 //you should set speed=30, turn=2, peace. linear=RPM, angular=rad/s
+void loop()                 //you should set speed = 0.1 m/s, turn = 0.5 rad/s
 { 
   
   if ((millis() - pub_timer) > 10){
@@ -95,6 +95,4 @@ void loop()                 //you should set speed=30, turn=2, peace. linear=RPM
   }
   
   nh.spinOnce();
-  //delay(10);                //delay(1) will loss sync - unable sub topic aka. rostopic echo nothing. <-false
-  //no delay still work fine, even better. ERROR sync cause by arduino POWER supply. 1 POWER only.
 }
