@@ -1,6 +1,7 @@
 #include <TimerOne.h>   //avoid using PWM on pin 11, 12, 13
 #include <ros.h>
 #include <geometry_msgs/Twist.h>
+#include <my_msgs/RobotState.h>
 
 #define enA 7      //speed control pin
 #define in1 15
@@ -26,7 +27,7 @@ unsigned long pub_timer=0;
 
 ros::NodeHandle  nh;
 
-geometry_msgs::Twist state_msg;
+my_msgs::RobotState state_msg;
 
 void presskey_callback(const geometry_msgs::Twist& vel_msg){
   linear_x = vel_msg.linear.x * 60/(PI*d);      //m/s -> RPM
@@ -84,11 +85,11 @@ void loop()                 //you should set speed = 0.1 m/s, turn = 0.5 rad/s
 { 
   
   if ((millis() - pub_timer) > 10){
-    state_msg.linear.x = x;
-    state_msg.linear.y = y; 
-    state_msg.linear.z = theta;
-    state_msg.angular.x = vx;
-    state_msg.angular.y = vtheta;
+    state_msg.x = x;
+    state_msg.y = y; 
+    state_msg.theta = theta;
+    state_msg.vx = vx;
+    state_msg.vtheta = vtheta;
     
     pub.publish(&state_msg);
     pub_timer =  millis();
