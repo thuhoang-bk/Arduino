@@ -14,6 +14,20 @@ const int interrupt0 = 0;   // for pin 2, or digitalPinToInterrupt(2) see attach
 const int interrupt1 = 1;   // pin 3
 int pulse_a = 0, pulse_b = 0;
 
+void callback_a() {
+  if (digitalRead(phaseB_a) == LOW)
+    ++pulse_a;
+  else 
+    --pulse_a;
+}
+
+void callback_b() {
+  if (digitalRead(phaseB_b) == LOW)
+    ++pulse_b;
+  else 
+    --pulse_b;
+}
+
 void setup() {
   attachInterrupt (interrupt1, callback_a, FALLING);
   attachInterrupt (interrupt0, callback_b, FALLING);
@@ -30,12 +44,12 @@ void setup() {
   pinMode(phaseA_b, INPUT_PULLUP);
   pinMode(phaseB_b, INPUT_PULLUP);
 
-  digitalWrite(in1, HIGH);   // <1>LOW -> <2>HIGH la cung chieu duong encoder 
-  digitalWrite(in2, LOW);   
-  analogWrite(enA, 60);  
-  digitalWrite(in3, LOW);
-  digitalWrite(in4, HIGH);   
-  analogWrite(enB, 60);
+//  digitalWrite(in1, HIGH);   // <1>LOW -> <2>HIGH la cung chieu duong encoder 
+//  digitalWrite(in2, LOW);   
+//  analogWrite(enA, 60);  
+//  digitalWrite(in3, LOW);
+//  digitalWrite(in4, HIGH);   
+//  analogWrite(enB, 60);
   
   Serial.begin(9600);       // start Serial monitor
 
@@ -46,19 +60,4 @@ void loop() {
   Serial.print(pulse_a);
   Serial.print(", ");
   Serial.println(pulse_b);
-}
-
-
-void callback_a() {
-  if (digitalRead(phaseB_a) == LOW)
-    ++pulse_a;
-  else 
-    --pulse_a;
-}
-
-void callback_b() {
-  if (digitalRead(phaseB_b) == LOW)
-    ++pulse_b;
-  else 
-    --pulse_b;
 }

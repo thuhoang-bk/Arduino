@@ -1,5 +1,6 @@
 
 // khong can khai bao lai in1, in2,.. va T, xung a, xung b
+// 390.7 xung/vong
 
 void rotate_a(double energy) {
   if (energy > 255) energy=255;
@@ -46,8 +47,8 @@ void Demxung_b() {
 }
 
 void PID() {
-  tocdo_a = ((xung_a/390) / 0.01) * 60;  // xung/390/0.01 = vong/s x60 = vong/ph = RPM 
-  tocdo_b = ((xung_b/390) / 0.01) * 60;  // xung/390/0.01 = vong/s x60 = vong/ph = RPM 
+  tocdo_a = ((xung_a/ppr) / 0.01) * 60;  // xung/390/0.01 = vong/s x60 = vong/ph = RPM 
+  tocdo_b = ((xung_b/ppr) / 0.01) * 60;  // xung/390/0.01 = vong/s x60 = vong/ph = RPM 
   
   xung_tb = (- xung_a + xung_b) / 2;
   vx = xung_tb*100*PI*d / 390;

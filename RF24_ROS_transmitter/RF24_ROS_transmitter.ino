@@ -9,7 +9,7 @@ ros::NodeHandle  nh;
 const byte address[6] = "00001";
 double Tocdodat[2];
 double linear_x = 0, angular_z = 0;
-double R = 0.143, d = 0.063; //m, 1/2 wheel distance and wheel diameter.
+double R = 0.139, d = 0.063; //m, 1/2 wheel distance and wheel diameter. Dtb=28.6, Dt=27.7. middle
 
 void presskey_callback(const geometry_msgs::Twist& vel_msg){
   linear_x = vel_msg.linear.x * 60/(PI*d);        // m/s -> RPM

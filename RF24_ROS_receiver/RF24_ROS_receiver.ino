@@ -20,6 +20,7 @@
 
 RF24 radio(24, 53); // CE, CSN
 const byte address[6] = "00001";
+const double ppr = 391;
 
 double T, xung_a, xung_b;
 double tocdo_a, tocdo_b, Tocdodat_a, Tocdodat_b;
@@ -73,7 +74,7 @@ void Demxung_b() {
 }
 
 void PID() {
-  tocdo_a = ((xung_a/390) / 0.01) * 60;  // xung/390/0.01 = vong/s x60 = vong/ph = RPM 
+  tocdo_a = ((xung_a/ppr) / 0.01) * 60;  // xung/390/0.01 = vong/s x60 = vong/ph = RPM 
   xung_a = 0;
   E_a = Tocdodat_a - tocdo_a;
   Output_a = (alpha*E_a + beta*E1_a + gamma*E2_a + 2*T*LastOutput_a) / (2*T);
@@ -82,7 +83,7 @@ void PID() {
   E2_a = E1_a;
   E1_a = E_a;
     
-  tocdo_b = ((xung_b/390) / 0.01) * 60;  // xung/390/0.01 = vong/s x60 = vong/ph = RPM 
+  tocdo_b = ((xung_b/ppr) / 0.01) * 60;  // xung/390/0.01 = vong/s x60 = vong/ph = RPM 
   xung_b = 0;
   E_b = Tocdodat_b - tocdo_b;
   Output_b = (alpha*E_b + beta*E1_b + gamma*E2_b + 2*T*LastOutput_b) / (2*T);

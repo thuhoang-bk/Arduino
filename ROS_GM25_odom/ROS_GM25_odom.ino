@@ -15,13 +15,14 @@
 #define phaseA_b 2   //encoder pins
 #define phaseB_b 4
 
+double ppr = 391;    //pulses per round
 double T, xung_a, xung_b, xung_tb;
 double tocdo_a, tocdo_b, Tocdodat_a, Tocdodat_b;
 double E_a, E1_a, E2_a, E_b, E1_b, E2_b;
 double alpha, beta, gamma, Kp, Ki, Kd;
 double Output_a, LastOutput_a, Output_b, LastOutput_b;
 double linear_x = 0, angular_z = 0;
-double R = 0.143, d = 0.063; //m, 1/2 wheel distance and wheel diameter.
+double R = 0.139, d = 0.063; //m, 1/2 wheel distance and wheel diameter.
 double vx=0, vtheta=0, x=0, y=0, theta=0;
 unsigned long pub_timer=0;
 
