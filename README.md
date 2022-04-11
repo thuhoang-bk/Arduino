@@ -30,4 +30,13 @@ This repo contains my Arduino projects, peace-v-
 	same time	-> NO, it is not! 2 power supply is OK.
 	
 	- biggest bug is baud too small (57600), change baud to 600800 solved the problem
+	
+---rf24_launch---
+	"launch rosserial and teleop_keyboard node to remotely control 2 motors"
+	
+	- open terminal in which "rf24.launch" is located
+	- sudo chmod 666 /dev/ttyACMx
+	- modify rf24.launch/port accordingly
+	
+	$ roslaunch rf24.launch
 
