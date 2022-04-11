@@ -22,6 +22,7 @@ double E_a, E1_a, E2_a, E_b, E1_b, E2_b;
 double alpha, beta, gamma, Kp, Ki, Kd;
 double Output_a, LastOutput_a, Output_b, LastOutput_b;
 double linear_x = 0, angular_z = 0;
+double R = 0.143, d = 0.063; //m, 1/2 wheel distance and wheel diameter.
 
 void rotate_a(double energy) {
   if (energy > 255) energy=255;
@@ -54,53 +55,14 @@ void rotate_b(double energy) {
 }
 
 void presskey_callback(const geometry_msgs::Twist& vel_msg){
-  linear_x = vel_msg.linear.x;
-  angular_z = vel_msg.angular.z;
+  linear_x = vel_msg.linear.x * 60/(PI*d);      //m/s -> RPM
+  angular_z = vel_msg.angular.z*R * 60/(PI*d);    //rad/s -> RPM
   
-  Tocdodat_a = -linear_x - angular_z * 30/PI;
-  Tocdodat_b =  linear_x - angular_z * 30/PI;
+  Tocdodat_a = -linear_x - angular_z;
+  Tocdodat_b =  linear_x - angular_z;
 }
 
 ros::Subscriber<geometry_msgs::Twist> sub("cmd_vel", &presskey_callback );
-
-void setup()
-{ 
-  pinMode(in1, OUTPUT);
-  pinMode(in2, OUTPUT);
-  pinMode(enA, OUTPUT);
-  pinMode(phaseA_a, INPUT_PULLUP);
-  pinMode(phaseB_a, INPUT_PULLUP);
-
-  pinMode(in3, OUTPUT);
-  pinMode(in4, OUTPUT);
-  pinMode(enB, OUTPUT);
-  pinMode(phaseA_b, INPUT_PULLUP);
-  pinMode(phaseB_b, INPUT_PULLUP);
-  Tocdodat_a = 0; tocdo_a = 0;      //120 RPM (stable) - max ~200 RPM, below 5 RPM not run
-  Tocdodat_b = 0; tocdo_b = 0;
-  
-  E_a = 0; E1_a = 0; E2_a = 0;
-  Output_a = 0; LastOutput_a = 0;
-  E_b = 0; E1_b = 0; E2_b = 0;
-  Output_b = 0; LastOutput_b = 0;
-  
-  // Thong so PID
-  T = 0.01;                       //thoi gian lay mau - s
-  Kp = 5; Ki = 0.6; Kd = 0.0;  
-
-  alpha = 2*T*Kp + Ki*T*T + 2*Kd;
-  beta = -2*T*Kp + Ki*T*T - 4*Kd;
-  gamma = 2*Kd;
-
-  Serial.begin(9600);
-  attachInterrupt(digitalPinToInterrupt(phaseA_a), Demxung_a, FALLING);
-  attachInterrupt(digitalPinToInterrupt(phaseA_b), Demxung_b, FALLING);
-  Timer1.initialize(10000);       // 10 ms
-  Timer1.attachInterrupt(PID);    // PID check speed and control speed of 2 motors periodically
-  
-  nh.initNode();
-  nh.subscribe(sub);
-}
 
 void Demxung_a() {
   if (digitalRead(phaseB_a)==LOW)
@@ -137,8 +99,48 @@ void PID() {
   rotate_a(Output_a);
   rotate_b(Output_b);
 }
+//----------------------
 
-void loop()                 //you should set speed=30, turn=2, peace. linear=RPM, angular=rad/s
+void setup()
+{ 
+  pinMode(in1, OUTPUT);
+  pinMode(in2, OUTPUT);
+  pinMode(enA, OUTPUT);
+  pinMode(phaseA_a, INPUT_PULLUP);
+  pinMode(phaseB_a, INPUT_PULLUP);
+
+  pinMode(in3, OUTPUT);
+  pinMode(in4, OUTPUT);
+  pinMode(enB, OUTPUT);
+  pinMode(phaseA_b, INPUT_PULLUP);
+  pinMode(phaseB_b, INPUT_PULLUP);
+  Tocdodat_a = 0; tocdo_a = 0;      //120 RPM (stable) - max ~200 RPM, below 5 RPM not run
+  Tocdodat_b = 0; tocdo_b = 0;
+  
+  E_a = 0; E1_a = 0; E2_a = 0;
+  Output_a = 0; LastOutput_a = 0;
+  E_b = 0; E1_b = 0; E2_b = 0;
+  Output_b = 0; LastOutput_b = 0;
+  
+  // Thong so PID
+  T = 0.01;                       //thoi gian lay mau - s
+  Kp = 7.9; Ki = 16.0; Kd = 0.0;  
+
+  alpha = 2*T*Kp + Ki*T*T + 2*Kd;
+  beta = -2*T*Kp + Ki*T*T - 4*Kd;
+  gamma = 2*Kd;
+
+  Serial.begin(9600);
+  attachInterrupt(digitalPinToInterrupt(phaseA_a), Demxung_a, FALLING);
+  attachInterrupt(digitalPinToInterrupt(phaseA_b), Demxung_b, FALLING);
+  Timer1.initialize(10000);       // 10 ms
+  Timer1.attachInterrupt(PID);    // PID check speed and control speed of 2 motors periodically
+  
+  nh.initNode();
+  nh.subscribe(sub);
+}
+
+void loop()                 //cmd_vel should set speed=0.1 turn=0.5
 { 
   nh.spinOnce();
   delay(1);

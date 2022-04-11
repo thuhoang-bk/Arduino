@@ -29,7 +29,7 @@ ros::NodeHandle  nh;
 geometry_msgs::Twist state_msg;
 
 void presskey_callback(const geometry_msgs::Twist& vel_msg){
-  linear_x = vel_msg.linear.x * 60/(PI*d);      //cm/s -> RPM
+  linear_x = vel_msg.linear.x * 60/(PI*d);      //m/s -> RPM
   angular_z = vel_msg.angular.z*R * 60/(PI*d);    //rad/s -> RPM
   
   Tocdodat_a = -linear_x - angular_z;
@@ -62,7 +62,7 @@ void setup()
   
   // Thong so PID
   T = 0.01;                       //thoi gian lay mau - s
-  Kp = 5; Ki = 0.6; Kd = 0.0;  
+  Kp = 7.9; Ki = 16.0; Kd = 0.0;  
 
   alpha = 2*T*Kp + Ki*T*T + 2*Kd;
   beta = -2*T*Kp + Ki*T*T - 4*Kd;

@@ -64,7 +64,7 @@
 
 class ArduinoHardware {
   public:
-    ArduinoHardware(SERIAL_CLASS* io , long baud= 600800){
+    ArduinoHardware(SERIAL_CLASS* io , long baud= 1000000){
       iostream = io;
       baud_ = baud;
     }
@@ -78,7 +78,7 @@ class ArduinoHardware {
 #else
       iostream = &Serial;
 #endif
-      baud_ = 600800;
+      baud_ = 1000000;
     }
     ArduinoHardware(ArduinoHardware& h){
       this->iostream = h.iostream;

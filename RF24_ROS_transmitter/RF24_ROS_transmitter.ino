@@ -9,14 +9,14 @@ ros::NodeHandle  nh;
 const byte address[6] = "00001";
 double Tocdodat[2];
 double linear_x = 0, angular_z = 0;
-
+double R = 0.143, d = 0.063; //m, 1/2 wheel distance and wheel diameter.
 
 void presskey_callback(const geometry_msgs::Twist& vel_msg){
-  linear_x = vel_msg.linear.x;
-  angular_z = vel_msg.angular.z;
+  linear_x = vel_msg.linear.x * 60/(PI*d);        // m/s -> RPM
+  angular_z = vel_msg.angular.z*R * 60/(PI*d);    // rad/s -> RPM
   
-  Tocdodat[0] = -linear_x - angular_z * 30/PI; //linear_x: RPM, Tocdodat: RPM
-  Tocdodat[1] =  linear_x - angular_z * 30/PI;
+  Tocdodat[0] = -linear_x - angular_z;
+  Tocdodat[1] =  linear_x - angular_z;
 
   radio.write(&Tocdodat, sizeof(Tocdodat));
 }
